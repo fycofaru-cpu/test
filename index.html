@@ -10,25 +10,39 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     /*
-      PALETA PROVISORIA — reemplazar con los tonos de la imagen de dirección visual.
-      Todo el diseño toma los colores de estas variables.
+      PALETA PROVISORIA — pendiente de la imagen de dirección visual.
+      Para aplicar la paleta definitiva alcanza con cambiar los 9 tonos base de este bloque:
+      halos, tintes, bordes de foco y degradados se derivan de ellos con color-mix().
     */
     :root {
+      /* Tonos base */
       --bg: #0a0d16;
       --bg-alt: #0f1320;
-      --surface: rgba(255, 255, 255, 0.045);
-      --surface-strong: rgba(255, 255, 255, 0.08);
-      --border: rgba(255, 255, 255, 0.10);
       --text: #eef1f8;
       --text-muted: #a3abbe;
       --accent: #6c8cff;
       --accent-2: #a371ff;
-      --accent-ink: #0a0d16;
-      --halo-1: rgba(108, 140, 255, 0.28);
-      --halo-2: rgba(163, 113, 255, 0.22);
-      --halo-3: rgba(64, 200, 220, 0.14);
+      --accent-3: #40c8dc;
       --ok: #4fd1a5;
       --error: #ff7a8a;
+
+      /* Derivados (no hace falta tocarlos) */
+      --accent-ink: var(--bg);
+      --surface: color-mix(in srgb, var(--text) 4.5%, transparent);
+      --surface-strong: color-mix(in srgb, var(--text) 8%, transparent);
+      --border: color-mix(in srgb, var(--text) 10%, transparent);
+      --placeholder: color-mix(in srgb, var(--text-muted) 70%, var(--bg));
+      --header-bg: color-mix(in srgb, var(--bg) 80%, transparent);
+      --halo-1: color-mix(in srgb, var(--accent) 28%, transparent);
+      --halo-2: color-mix(in srgb, var(--accent-2) 22%, transparent);
+      --halo-3: color-mix(in srgb, var(--accent-3) 14%, transparent);
+      --tint-1: color-mix(in srgb, var(--accent) 11%, transparent);
+      --tint-2: color-mix(in srgb, var(--accent-2) 8%, transparent);
+      --focus-ring: color-mix(in srgb, var(--accent) 25%, transparent);
+      --ok-bg: color-mix(in srgb, var(--ok) 8%, transparent);
+      --ok-border: color-mix(in srgb, var(--ok) 45%, transparent);
+
+      /* Marcas de validación: fijas a propósito, se retiran antes de publicar */
       --validar-bg: rgba(255, 196, 0, 0.12);
       --validar-border: rgba(255, 196, 0, 0.55);
       --validar-text: #ffd666;
@@ -147,11 +161,11 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      background: rgba(10, 13, 22, 0.78);
+      background: var(--bg);
       border-bottom: 1px solid var(--border);
     }
     @supports (backdrop-filter: blur(8px)) {
-      .site-header { background: rgba(10, 13, 22, 0.6); backdrop-filter: blur(10px); }
+      .site-header { background: var(--header-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
     }
     .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; }
     .brand { font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.01em; white-space: nowrap; }
@@ -220,16 +234,24 @@
     .casos { display: grid; gap: 16px; grid-template-columns: 1fr; }
     @media (min-width: 640px) { .casos { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1000px) { .casos { grid-template-columns: repeat(3, 1fr); } }
-    .caso { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
-    .caso-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .caso { display: flex; flex-direction: column; gap: 14px; padding: 22px; }
+    .caso-top { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; }
     .caso-rubro { color: var(--text-muted); font-size: 14px; }
-    .caso-dato { font-size: 15px; color: var(--text-muted); display: grid; gap: 6px; }
-    .caso-dato b { color: var(--text); font-weight: 600; }
-    .caso figure { margin: 0; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); background: var(--bg-alt); }
+    .caso .caso-cifra { margin: 0; color: var(--text); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: clamp(24px, 3vw, 28px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; }
+    .caso .caso-cifra small { font-size: 14px; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+    .caso-dato { margin: 0; font-size: 15px; color: var(--text-muted); display: grid; gap: 8px; }
+    .caso-dato div { display: grid; grid-template-columns: 70px 1fr; gap: 8px; }
+    .caso-dato dt { color: var(--text); font-weight: 600; }
+    .caso-dato dd { margin: 0; }
+    .caso-dato small { font-size: 13px; }
+    .caso-dato .dot { display: inline-block; width: 8px; height: 8px; margin-right: 6px; vertical-align: 1px; }
+    .caso .caso-nota { margin: 0; font-size: 14px; color: var(--text-muted); border-left: 2px solid var(--border); padding-left: 12px; }
+    .caso-nota b { color: var(--text); font-weight: 600; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; display: block; }
+    .caso figure { margin: auto 0 0; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); background: var(--bg-alt); }
     .caso figure a { display: block; }
-    .caso figure img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; }
+    .caso figure img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; background: #fff; }
     .caso figcaption { font-size: 13px; color: var(--text-muted); padding: 8px 12px; }
-    .caso .sin-captura { font-size: 13px; color: var(--text-muted); padding: 10px 12px; border: 1px dashed var(--border); border-radius: var(--radius-sm); }
+    .caso .sin-captura { margin: auto 0 0; font-size: 13px; color: var(--text-muted); padding: 10px 12px; border: 1px dashed var(--border); border-radius: var(--radius-sm); }
     .img-error { padding: 24px 12px; text-align: center; font-size: 14px; color: var(--text-muted); }
     .fuente { font-size: 14px; margin-top: 24px; color: var(--text-muted); }
 
@@ -299,12 +321,47 @@
       text-align: center;
     }
     .avatar .validar { font-size: 12px; margin-top: 8px; letter-spacing: 0; }
+    .foto {
+      margin: 0;
+      width: 100%;
+      max-width: 220px;
+      position: relative;
+    }
+    @media (min-width: 860px) { .foto { max-width: 280px; } }
+    .foto::before {
+      content: "";
+      position: absolute;
+      inset: -18%;
+      z-index: -1;
+      background:
+        radial-gradient(closest-side at 35% 30%, var(--halo-1), transparent),
+        radial-gradient(closest-side at 70% 75%, var(--halo-2), transparent);
+      pointer-events: none;
+    }
+    .foto img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 28px; border: 1px solid var(--border); background: var(--bg-alt); }
+    .foto figcaption { margin-top: 12px; font-size: 14px; color: var(--text-muted); }
+    .foto figcaption b { color: var(--text); display: block; font-size: 16px; }
     .about p { color: var(--text-muted); }
+    .about ul { color: var(--text-muted); padding-left: 20px; margin: 16px 0; }
+    .about li { margin: 6px 0; }
+
+    /* Franja de prueba en la apertura */
+    .prueba {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 14px;
+      font-size: 14.5px;
+      color: var(--text-muted);
+    }
+    .prueba a { color: var(--text); font-weight: 600; }
+    .prueba .dots { display: inline-flex; gap: 4px; }
 
     /* Inversión */
     .precio { display: grid; gap: 16px; }
     @media (min-width: 860px) { .precio { grid-template-columns: 1.1fr 1fr; } }
-    .precio-main { border-color: rgba(108, 140, 255, 0.4); background: linear-gradient(160deg, rgba(108,140,255,.12), rgba(163,113,255,.06) 60%, transparent); }
+    .precio-main { border-color: var(--halo-1); background: linear-gradient(160deg, var(--tint-1), var(--tint-2) 60%, transparent); }
     .precio dl { margin: 0; display: grid; gap: 16px; }
     .precio dt { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); font-weight: 600; }
     .precio dd { margin: 4px 0 0; font-size: 17px; }
@@ -352,8 +409,8 @@
       padding: 13px 14px;
     }
     textarea { min-height: 120px; resize: vertical; }
-    input::placeholder, textarea::placeholder { color: #6f7890; }
-    input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108, 140, 255, 0.25); }
+    input::placeholder, textarea::placeholder { color: var(--placeholder); }
+    input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus-ring); }
     [aria-invalid="true"] { border-color: var(--error); }
     .error { color: var(--error); font-size: 14px; min-height: 0; }
     .error:empty { display: none; }
@@ -362,8 +419,8 @@
       display: none;
       border-radius: var(--radius-sm);
       padding: 16px 18px;
-      border: 1px solid rgba(79, 209, 165, 0.45);
-      background: rgba(79, 209, 165, 0.08);
+      border: 1px solid var(--ok-border);
+      background: var(--ok-bg);
       font-size: 15px;
     }
     .estado.visible { display: block; }
@@ -387,11 +444,28 @@
       padding: 24px;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      background: linear-gradient(120deg, rgba(108,140,255,.10), rgba(163,113,255,.08));
+      background: linear-gradient(120deg, var(--tint-1), var(--tint-2));
     }
     .cta-band p { margin: 0; font-weight: 600; max-width: 36rem; }
 
-    .alt { background: linear-gradient(180deg, transparent, rgba(255,255,255,0.02) 20%, rgba(255,255,255,0.02) 80%, transparent); }
+    .alt { --alt-tint: color-mix(in srgb, var(--text) 2%, transparent); background: linear-gradient(180deg, transparent, var(--alt-tint) 20%, var(--alt-tint) 80%, transparent); }
+
+    /* Halo suave detrás del título de cada sección */
+    .section-head { position: relative; }
+    .section-head::before {
+      content: "";
+      position: absolute;
+      left: -10%;
+      top: -60px;
+      width: min(520px, 90vw);
+      height: 260px;
+      z-index: -1;
+      background: radial-gradient(closest-side, var(--tint-1), transparent);
+      pointer-events: none;
+    }
+    .card { transition: border-color .2s ease; }
+    .card:hover { border-color: color-mix(in srgb, var(--accent) 35%, transparent); }
+    @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
   </style>
 </head>
 <body>
@@ -425,6 +499,10 @@
           <a class="btn btn-primary" href="#consulta">Consultar por WhatsApp</a>
           <a class="btn btn-ghost" href="#metodo">Ver cómo funciona</a>
         </div>
+        <p class="prueba">
+          <span class="dots" aria-hidden="true"><span class="dot dot-fact"></span><span class="dot dot-ped"></span><span class="dot dot-ads"></span></span>
+          <span><a href="#casos">7 casos publicados</a> de tiendas que trabajaron con Nicolás en EcomBoost IA, con cifra, métrica y período.</span>
+        </p>
 
         <div class="facts" role="list">
           <div class="fact" role="listitem"><strong>13 semanas</strong><span>de trabajo sobre tu tienda</span></div>
@@ -455,7 +533,7 @@
           </div>
           <div class="metrica">
             <h3><span class="dot dot-ped" aria-hidden="true"></span>Pedidos</h3>
-            <p>Cantidad de órdenes. No dice cuánto dinero representan.</p>
+            <p>Cantidad de órdenes o ventas. No dice cuánto dinero representan.</p>
           </div>
           <div class="metrica">
             <h3><span class="dot dot-ads" aria-hidden="true"></span>Resultados publicitarios</h3>
@@ -464,108 +542,115 @@
         </div>
 
         <!--
-          Completar cada caso con la cifra, la métrica y el período TAL COMO aparecen en
-          https://nicolasbarone.com/ecomboost-ia (sección «RESULTADOS DE ÉXITO").
-          Cambiar la clase del punto según la métrica: dot-fact (facturación), dot-ped (pedidos), dot-ads (resultados publicitarios).
+          Datos tomados de https://nicolasbarone.com/ecomboost-ia, sección «RESULTADOS DE ÉXITO» (revisado el 29/09/2026).
+          Cifras, períodos, rubros y conversiones a USD tal como figuran en la fuente.
+          Punto principal de cada tarjeta: dot-fact (facturación), dot-ped (pedidos), dot-ads (resultados publicitarios).
         -->
         <div class="casos">
           <article class="card caso">
-            <div class="caso-top"><h3>Emanuel</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
-            <div class="caso-dato">
-              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
-              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
-              <span><b>Período:</b> <span class="validar">Validar</span></span>
-            </div>
+            <div class="caso-top"><h3>Emanuel</h3><span class="caso-rubro">Productos para bebé</span></div>
+            <p class="caso-cifra"><span class="dot dot-fact" aria-hidden="true"></span>USD 5.666</p>
+            <dl class="caso-dato">
+              <div><dt>Métrica</dt><dd><span class="dot dot-fact" aria-hidden="true"></span>Facturación de la tienda <small>(según la captura)</small></dd></div>
+              <div><dt></dt><dd><span class="dot dot-ads" aria-hidden="true"></span>ROAS +8</dd></div>
+              <div><dt>Período</dt><dd>Un mes y medio</dd></div>
+            </dl>
+            <p class="caso-nota"><b>Empezó desde cero</b>Empezó sin producto elegido. Eligió uno, creó los anuncios y puso la tienda en marcha.</p>
             <figure>
               <a href="https://nicolasbarone.com/emanuel-resultado.png" target="_blank" rel="noopener">
-                <img src="https://nicolasbarone.com/emanuel-resultado.png" alt="Captura publicada del resultado de Emanuel" width="800" height="600" loading="lazy" decoding="async">
+                <img src="https://nicolasbarone.com/emanuel-resultado.png" alt="Captura publicada del panel de la tienda de Emanuel: facturación del 16/07/2026 al 01/09/2026" width="2710" height="974" loading="lazy" decoding="async" style="object-position: 90% 50%">
               </a>
-              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+              <figcaption>Captura publicada · tocá para verla completa</figcaption>
             </figure>
           </article>
 
           <article class="card caso">
             <div class="caso-top"><h3>Julio</h3><span class="caso-rubro">Indumentaria</span></div>
-            <div class="caso-dato">
-              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
-              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
-              <span><b>Período:</b> <span class="validar">Validar</span></span>
-            </div>
+            <p class="caso-cifra"><span class="dot dot-fact" aria-hidden="true"></span>USD 50.000 <small>extras</small></p>
+            <dl class="caso-dato">
+              <div><dt>Métrica</dt><dd><span class="dot dot-fact" aria-hidden="true"></span>Facturación de la tienda <small>(según la captura)</small></dd></div>
+              <div><dt></dt><dd><span class="dot dot-ads" aria-hidden="true"></span>ROAS +5</dd></div>
+              <div><dt>Período</dt><dd>2 meses</dd></div>
+            </dl>
+            <p class="caso-nota"><b>Ya vendía</b>Vendía cerca de USD 2.000 por mes por Instagram y WhatsApp. Pasó el proceso a una tienda online.</p>
             <figure>
               <a href="https://nicolasbarone.com/julio-resultado.jpeg" target="_blank" rel="noopener">
-                <img src="https://nicolasbarone.com/julio-resultado.jpeg" alt="Captura publicada del resultado de Julio, tienda de indumentaria" width="800" height="600" loading="lazy" decoding="async">
+                <img src="https://nicolasbarone.com/julio-resultado.jpeg" alt="Captura publicada de la conversación con Julio, tienda de indumentaria, con el panel de facturación y ventas de su tienda" width="1320" height="1375" loading="lazy" decoding="async" style="object-position: 50% 80%">
               </a>
-              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+              <figcaption>Captura publicada · tocá para verla completa</figcaption>
             </figure>
           </article>
 
           <article class="card caso">
-            <div class="caso-top"><h3>Lucía</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
-            <div class="caso-dato">
-              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
-              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
-              <span><b>Período:</b> <span class="validar">Validar</span></span>
-            </div>
+            <div class="caso-top"><h3>Lucía</h3><span class="caso-rubro">Indumentaria femenina</span></div>
+            <p class="caso-cifra"><span class="dot dot-ads" aria-hidden="true"></span>USD 17.168</p>
+            <dl class="caso-dato">
+              <div><dt>Métrica</dt><dd><span class="dot dot-ads" aria-hidden="true"></span>Valor de resultados en Meta Ads · ROAS +4</dd></div>
+              <div><dt>Período</dt><dd>2 meses</dd></div>
+            </dl>
             <figure>
               <a href="https://nicolasbarone.com/lucia-resultado-meta.png" target="_blank" rel="noopener">
-                <img src="https://nicolasbarone.com/lucia-resultado-meta.png" alt="Captura publicada del resultado de Lucía" width="800" height="600" loading="lazy" decoding="async">
+                <img src="https://nicolasbarone.com/lucia-resultado-meta.png" alt="Captura publicada del administrador de anuncios de Meta de la tienda de Lucía: gasto, compras, ROAS y valor de resultados" width="1246" height="702" loading="lazy" decoding="async" style="object-position: 100% 50%">
               </a>
-              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+              <figcaption>Captura publicada · tocá para verla completa</figcaption>
             </figure>
           </article>
 
           <article class="card caso">
-            <div class="caso-top"><h3>Marcos</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
-            <div class="caso-dato">
-              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
-              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
-              <span><b>Período:</b> <span class="validar">Validar</span></span>
-            </div>
+            <div class="caso-top"><h3>Marcos</h3><span class="caso-rubro">Moda masculina</span></div>
+            <p class="caso-cifra"><span class="dot dot-fact" aria-hidden="true"></span>$150.176.471,96 ARS <small>≈ USD 100.118</small></p>
+            <dl class="caso-dato">
+              <div><dt>Métrica</dt><dd><span class="dot dot-fact" aria-hidden="true"></span>Facturados</dd></div>
+              <div><dt></dt><dd><span class="dot dot-ped" aria-hidden="true"></span>2.368 pedidos</dd></div>
+              <div><dt>Período</dt><dd>Últimos 90 días</dd></div>
+            </dl>
             <p class="sin-captura">Caso publicado sin captura en la fuente.</p>
           </article>
 
           <article class="card caso">
             <div class="caso-top"><h3>Tienda de suplementos</h3><span class="caso-rubro">Suplementos</span></div>
-            <div class="caso-dato">
-              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
-              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
-              <span><b>Período:</b> <span class="validar">Validar</span></span>
-            </div>
+            <p class="caso-cifra"><span class="dot dot-ads" aria-hidden="true"></span>$143.835.412,08 ARS <small>≈ USD 95.890</small></p>
+            <dl class="caso-dato">
+              <div><dt>Métrica</dt><dd><span class="dot dot-ads" aria-hidden="true"></span>Valor de resultados · ROAS 8,61</dd></div>
+              <div><dt>Período</dt><dd>Últimos 30 días</dd></div>
+            </dl>
             <p class="sin-captura">Caso publicado sin captura en la fuente.</p>
           </article>
 
           <article class="card caso">
-            <div class="caso-top"><h3>Michael</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
-            <div class="caso-dato">
-              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
-              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
-              <span><b>Período:</b> <span class="validar">Validar</span></span>
-            </div>
+            <div class="caso-top"><h3>Michael</h3></div>
+            <p class="caso-cifra"><span class="dot dot-fact" aria-hidden="true"></span>$73.514.379,30 ARS <small>≈ USD 49.010</small></p>
+            <dl class="caso-dato">
+              <div><dt>Métrica</dt><dd><span class="dot dot-fact" aria-hidden="true"></span>Facturados</dd></div>
+              <div><dt></dt><dd><span class="dot dot-ped" aria-hidden="true"></span>800 ventas</dd></div>
+              <div><dt>Período</dt><dd>3 meses</dd></div>
+            </dl>
             <figure>
               <a href="https://nicolasbarone.com/original-result-4.jpg" target="_blank" rel="noopener">
-                <img src="https://nicolasbarone.com/original-result-4.jpg" alt="Captura publicada del resultado de Michael" width="800" height="600" loading="lazy" decoding="async">
+                <img src="https://nicolasbarone.com/original-result-4.jpg" alt="Captura publicada del panel de la tienda de Michael: 800 ventas y $ 73.514.379,30 de facturación" width="1000" height="1050" loading="lazy" decoding="async" style="object-position: 50% 100%">
               </a>
-              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+              <figcaption>Captura publicada · tocá para verla completa</figcaption>
             </figure>
           </article>
 
           <article class="card caso">
             <div class="caso-top"><h3>Julio</h3><span class="caso-rubro">Tecnología</span></div>
-            <div class="caso-dato">
-              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
-              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
-              <span><b>Período:</b> <span class="validar">Validar</span></span>
-            </div>
+            <p class="caso-cifra"><span class="dot dot-fact" aria-hidden="true"></span>$58.665 M ARS <small>≈ USD 39.110</small></p>
+            <dl class="caso-dato">
+              <div><dt>Métrica</dt><dd><span class="dot dot-fact" aria-hidden="true"></span>Facturados</dd></div>
+              <div><dt></dt><dd><span class="dot dot-ped" aria-hidden="true"></span>879 pedidos</dd></div>
+              <div><dt>Período</dt><dd>1 mes</dd></div>
+            </dl>
             <figure>
               <a href="https://nicolasbarone.com/original-result-2.jpg" target="_blank" rel="noopener">
-                <img src="https://nicolasbarone.com/original-result-2.jpg" alt="Captura publicada del resultado de Julio, tienda de tecnología" width="800" height="600" loading="lazy" decoding="async">
+                <img src="https://nicolasbarone.com/original-result-2.jpg" alt="Captura publicada del panel de Shopify de la tienda de Julio, rubro tecnología: ventas totales y 879 pedidos del 20 de octubre al 20 de noviembre" width="1000" height="1050" loading="lazy" decoding="async" style="object-position: 50% 0%">
               </a>
-              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+              <figcaption>Captura publicada · tocá para verla completa</figcaption>
             </figure>
           </article>
         </div>
 
-        <p class="fuente">Fuente: <a href="https://nicolasbarone.com/ecomboost-ia" target="_blank" rel="noopener">nicolasbarone.com/ecomboost-ia</a>, sección «Resultados de éxito».</p>
+        <p class="fuente">Fuente: <a href="https://nicolasbarone.com/ecomboost-ia" target="_blank" rel="noopener">nicolasbarone.com/ecomboost-ia</a>, sección «Resultados de éxito». Las conversiones a USD son las que publica la fuente.</p>
       </div>
     </section>
 
@@ -672,15 +757,21 @@
     <!-- NICOLÁS -->
     <section id="nicolas" class="alt">
       <div class="wrap about">
-        <div class="avatar" role="img" aria-label="Espacio para la foto de Nicolás Barone">
-          <div>NB<br><span class="validar">Validar: foto</span></div>
-        </div>
+        <figure class="foto">
+          <img src="https://nicolasbarone.com/nicolas-barone.jpg" alt="Nicolás Barone" width="1130" height="1400" loading="lazy" decoding="async">
+          <figcaption>Fundador de EcomBoost IA</figcaption>
+        </figure>
         <div>
           <p class="eyebrow">Quién te acompaña</p>
           <h2>Nicolás Barone</h2>
           <p>Nicolás presenta Scaling Boost y es quien trabaja con vos en cada una de las 17 sesiones. Los casos de esta página son trabajos suyos publicados en EcomBoost IA.</p>
-          <p><span class="validar">Validar: bio y trayectoria de Nicolás</span></p>
-          <p><a href="https://nicolasbarone.com" target="_blank" rel="noopener">nicolasbarone.com</a></p>
+          <ul>
+            <li>Tiene tiendas propias de suplementos e indumentaria.</li>
+            <li>Tiene una fábrica de suplementos en Argentina con productos aprobados por ANMAT.</li>
+            <li>Es socio de importadores que traen productos de China y Estados Unidos.</li>
+            <li>Acompaña tiendas de Latinoamérica desde sus agencias de ecommerce e inteligencia artificial.</li>
+          </ul>
+          <p><a href="https://nicolasbarone.com/ecomboost-ia" target="_blank" rel="noopener">Ver su perfil en nicolasbarone.com</a></p>
         </div>
       </div>
     </section>
@@ -835,6 +926,21 @@
         img.addEventListener('error', fallar);
         if (img.complete && img.naturalWidth === 0 && img.currentSrc) fallar();
       });
+
+      // Si la foto de Nicolás no carga, se muestran sus iniciales.
+      var foto = document.querySelector('.foto img');
+      if (foto) {
+        var sinFoto = function () {
+          var av = document.createElement('div');
+          av.className = 'avatar';
+          av.setAttribute('role', 'img');
+          av.setAttribute('aria-label', 'Nicolás Barone');
+          av.textContent = 'NB';
+          foto.replaceWith(av);
+        };
+        foto.addEventListener('error', sinFoto);
+        if (foto.complete && foto.naturalWidth === 0 && foto.currentSrc) sinFoto();
+      }
 
       var form = document.getElementById('form-consulta');
       var estado = document.getElementById('estado');
