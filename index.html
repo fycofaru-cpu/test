@@ -1,0 +1,937 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scaling Boost · Nicolás Barone</title>
+  <meta name="description" content="Scaling Boost con Nicolás Barone: 13 semanas, 17 sesiones individuales programadas y tres sistemas instalados en tu tienda online: Numbers, CRM y EcomBoost Studio.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /*
+      PALETA PROVISORIA — reemplazar con los tonos de la imagen de dirección visual.
+      Todo el diseño toma los colores de estas variables.
+    */
+    :root {
+      --bg: #0a0d16;
+      --bg-alt: #0f1320;
+      --surface: rgba(255, 255, 255, 0.045);
+      --surface-strong: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.10);
+      --text: #eef1f8;
+      --text-muted: #a3abbe;
+      --accent: #6c8cff;
+      --accent-2: #a371ff;
+      --accent-ink: #0a0d16;
+      --halo-1: rgba(108, 140, 255, 0.28);
+      --halo-2: rgba(163, 113, 255, 0.22);
+      --halo-3: rgba(64, 200, 220, 0.14);
+      --ok: #4fd1a5;
+      --error: #ff7a8a;
+      --validar-bg: rgba(255, 196, 0, 0.12);
+      --validar-border: rgba(255, 196, 0, 0.55);
+      --validar-text: #ffd666;
+
+      --radius: 18px;
+      --radius-sm: 12px;
+      --maxw: 1120px;
+      --gutter: 16px;
+      --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 17px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Halos de fondo: gradientes radiales fijos, sin filtros de blur (livianos en móvil). */
+    .halos {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(38rem 30rem at 12% -4%, var(--halo-1), transparent 70%),
+        radial-gradient(34rem 28rem at 92% 18%, var(--halo-2), transparent 70%),
+        radial-gradient(40rem 30rem at 50% 108%, var(--halo-3), transparent 70%),
+        var(--bg);
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: var(--accent); }
+    a:hover { color: var(--text); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gutter); }
+    @media (min-width: 720px) { :root { --gutter: 28px; } }
+
+    [id] { scroll-margin-top: 80px; }
+    section { padding: 72px 0; position: relative; }
+    @media (min-width: 900px) { section { padding: 104px 0; } }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 14px;
+    }
+    h1, h2, h3 { line-height: 1.15; margin: 0; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(34px, 6.2vw, 60px); font-weight: 800; }
+    h2 { font-size: clamp(28px, 4.4vw, 42px); font-weight: 750; }
+    h3 { font-size: 20px; font-weight: 700; }
+    .lead { font-size: clamp(17px, 2.1vw, 20px); color: var(--text-muted); max-width: 44rem; }
+    .section-head { max-width: 46rem; margin-bottom: 44px; }
+    .section-head p { color: var(--text-muted); margin: 16px 0 0; }
+    .grad {
+      background: linear-gradient(92deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Marca de dato a validar */
+    .validar {
+      display: inline-block;
+      background: var(--validar-bg);
+      border: 1px dashed var(--validar-border);
+      color: var(--validar-text);
+      font-size: 0.82em;
+      font-weight: 600;
+      line-height: 1.35;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    /* Botones */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 0 26px;
+      border-radius: 999px;
+      border: 0;
+      font: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(92deg, var(--accent), var(--accent-2));
+      color: var(--accent-ink);
+      box-shadow: 0 10px 30px -10px var(--halo-1);
+    }
+    .btn-primary:hover { color: var(--accent-ink); transform: translateY(-1px); box-shadow: 0 14px 36px -10px var(--halo-2); }
+    .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--surface-strong); }
+    @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(10, 13, 22, 0.78);
+      border-bottom: 1px solid var(--border);
+    }
+    @supports (backdrop-filter: blur(8px)) {
+      .site-header { background: rgba(10, 13, 22, 0.6); backdrop-filter: blur(10px); }
+    }
+    .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; }
+    .brand { font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.01em; white-space: nowrap; }
+    .brand small { font-weight: 500; color: var(--text-muted); margin-left: 6px; }
+    .site-header nav { display: none; gap: 24px; }
+    .site-header nav a { color: var(--text-muted); text-decoration: none; font-size: 15px; }
+    .site-header nav a:hover { color: var(--text); }
+    .site-header .btn { min-height: 42px; padding: 0 18px; font-size: 14px; }
+    @media (min-width: 960px) { .site-header nav { display: flex; } }
+    @media (max-width: 420px) { .brand small { display: none; } }
+
+    /* Hero */
+    .hero { padding-top: 64px; }
+    @media (min-width: 900px) { .hero { padding-top: 96px; } }
+    .hero h1 { max-width: 16ch; }
+    .hero .lead { margin: 22px 0 32px; }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 48px;
+    }
+    .fact {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .fact strong { display: block; font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+    .fact span { color: var(--text-muted); font-size: 15px; }
+
+    /* Tarjetas genéricas */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+    }
+    .grid-3 { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+    .grid-2 { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 760px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+
+    /* Casos */
+    .aviso {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+    .aviso strong { color: var(--text); }
+    .metricas { display: grid; gap: 12px; grid-template-columns: 1fr; margin-bottom: 36px; }
+    @media (min-width: 760px) { .metricas { grid-template-columns: repeat(3, 1fr); } }
+    .metrica { padding: 18px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-alt); }
+    .metrica h3 { font-size: 16px; display: flex; align-items: center; gap: 8px; }
+    .metrica p { margin: 6px 0 0; color: var(--text-muted); font-size: 14.5px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+    .dot-fact { background: var(--accent); }
+    .dot-ped { background: var(--ok); }
+    .dot-ads { background: var(--accent-2); }
+
+    .casos { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .casos { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1000px) { .casos { grid-template-columns: repeat(3, 1fr); } }
+    .caso { display: flex; flex-direction: column; gap: 14px; padding: 20px; }
+    .caso-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .caso-rubro { color: var(--text-muted); font-size: 14px; }
+    .caso-dato { font-size: 15px; color: var(--text-muted); display: grid; gap: 6px; }
+    .caso-dato b { color: var(--text); font-weight: 600; }
+    .caso figure { margin: 0; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); background: var(--bg-alt); }
+    .caso figure a { display: block; }
+    .caso figure img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; }
+    .caso figcaption { font-size: 13px; color: var(--text-muted); padding: 8px 12px; }
+    .caso .sin-captura { font-size: 13px; color: var(--text-muted); padding: 10px 12px; border: 1px dashed var(--border); border-radius: var(--radius-sm); }
+    .img-error { padding: 24px 12px; text-align: center; font-size: 14px; color: var(--text-muted); }
+    .fuente { font-size: 14px; margin-top: 24px; color: var(--text-muted); }
+
+    /* Método */
+    .pasos { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; counter-reset: paso; }
+    @media (min-width: 900px) { .pasos { grid-template-columns: repeat(4, 1fr); } }
+    .pasos li { counter-increment: paso; }
+    .pasos li::before {
+      content: counter(paso, decimal-leading-zero);
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .pasos p, .card p { color: var(--text-muted); margin: 10px 0 0; font-size: 15.5px; }
+
+    /* Sistemas */
+    .sistema { position: relative; overflow: hidden; }
+    .sistema::after {
+      content: "";
+      position: absolute;
+      inset: auto -30% -60% auto;
+      width: 70%;
+      aspect-ratio: 1;
+      background: radial-gradient(closest-side, var(--halo-2), transparent);
+      pointer-events: none;
+    }
+    .sistema .tag { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+    .sistema h3 { margin-top: 8px; font-size: 24px; }
+
+    .incluye { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 12px; }
+    .incluye li { display: flex; gap: 12px; align-items: flex-start; }
+    .check {
+      flex: none;
+      width: 22px; height: 22px;
+      margin-top: 3px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: grid; place-items: center;
+    }
+    .check svg { width: 12px; height: 12px; stroke: var(--accent-ink); }
+
+    /* Roles */
+    .rol h3 { display: flex; align-items: center; gap: 10px; }
+    .rol ul { margin: 14px 0 0; padding-left: 20px; color: var(--text-muted); }
+    .rol li { margin: 6px 0; }
+
+    /* Nicolás */
+    .about { display: grid; gap: 28px; align-items: center; }
+    @media (min-width: 860px) { .about { grid-template-columns: 280px 1fr; gap: 48px; } }
+    .avatar {
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 1;
+      border-radius: 28px;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 30% 20%, var(--halo-1), transparent 60%),
+        radial-gradient(circle at 80% 90%, var(--halo-2), transparent 60%),
+        var(--bg-alt);
+      border: 1px solid var(--border);
+      font-size: 72px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-align: center;
+    }
+    .avatar .validar { font-size: 12px; margin-top: 8px; letter-spacing: 0; }
+    .about p { color: var(--text-muted); }
+
+    /* Inversión */
+    .precio { display: grid; gap: 16px; }
+    @media (min-width: 860px) { .precio { grid-template-columns: 1.1fr 1fr; } }
+    .precio-main { border-color: rgba(108, 140, 255, 0.4); background: linear-gradient(160deg, rgba(108,140,255,.12), rgba(163,113,255,.06) 60%, transparent); }
+    .precio dl { margin: 0; display: grid; gap: 16px; }
+    .precio dt { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); font-weight: 600; }
+    .precio dd { margin: 4px 0 0; font-size: 17px; }
+
+    /* FAQ */
+    .faq { display: grid; gap: 10px; max-width: 52rem; }
+    .faq details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .faq summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 18px 52px 18px 20px;
+      font-weight: 600;
+      position: relative;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after {
+      content: "+";
+      position: absolute;
+      right: 20px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 22px;
+      color: var(--accent);
+      font-weight: 400;
+    }
+    .faq details[open] summary::after { content: "–"; }
+    .faq details p { margin: 0; padding: 0 20px 18px; color: var(--text-muted); }
+
+    /* Formulario */
+    .consulta { display: grid; gap: 32px; }
+    @media (min-width: 900px) { .consulta { grid-template-columns: 1fr 1.1fr; gap: 56px; align-items: start; } }
+    .consulta ol { color: var(--text-muted); padding-left: 20px; margin: 20px 0 0; }
+    .consulta ol li { margin: 8px 0; }
+    form { display: grid; gap: 18px; }
+    .campo { display: grid; gap: 6px; }
+    label { font-weight: 600; font-size: 15px; }
+    .hint { font-size: 13.5px; color: var(--text-muted); }
+    input, textarea {
+      width: 100%;
+      font: inherit;
+      font-size: 16px; /* evita zoom automático en iOS */
+      color: var(--text);
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 14px;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    input::placeholder, textarea::placeholder { color: #6f7890; }
+    input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108, 140, 255, 0.25); }
+    [aria-invalid="true"] { border-color: var(--error); }
+    .error { color: var(--error); font-size: 14px; min-height: 0; }
+    .error:empty { display: none; }
+    .privacidad { font-size: 13.5px; color: var(--text-muted); margin: 0; }
+    .estado {
+      display: none;
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      border: 1px solid rgba(79, 209, 165, 0.45);
+      background: rgba(79, 209, 165, 0.08);
+      font-size: 15px;
+    }
+    .estado.visible { display: block; }
+    .estado p { margin: 0 0 8px; }
+    .estado p:last-child { margin: 0; }
+    .estado a { font-weight: 700; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--border); padding: 32px 0 48px; color: var(--text-muted); font-size: 14px; }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; justify-content: space-between; }
+    footer a { color: var(--text-muted); }
+
+    /* CTA intermedio */
+    .cta-band {
+      margin-top: 44px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(120deg, rgba(108,140,255,.10), rgba(163,113,255,.08));
+    }
+    .cta-band p { margin: 0; font-weight: 600; max-width: 36rem; }
+
+    .alt { background: linear-gradient(180deg, transparent, rgba(255,255,255,0.02) 20%, rgba(255,255,255,0.02) 80%, transparent); }
+  </style>
+</head>
+<body>
+  <div class="halos" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="#inicio">Scaling Boost <small>· Nicolás Barone</small></a>
+      <nav aria-label="Secciones">
+        <a href="#casos">Casos</a>
+        <a href="#metodo">Método</a>
+        <a href="#incluye">Qué incluye</a>
+        <a href="#nicolas">Nicolás</a>
+        <a href="#preguntas">Preguntas</a>
+      </nav>
+      <a class="btn btn-primary" href="#consulta">Hacer mi consulta</a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <!-- APERTURA -->
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Programa de 13 semanas para tiendas online</p>
+        <h1>Escalá tu tienda con <span class="grad">sistemas instalados</span> y decisiones acompañadas.</h1>
+        <p class="lead">
+          En Scaling Boost, Nicolás Barone instala tres sistemas en tu operación, te muestra qué cambios implementar
+          y te acompaña en cada decisión durante 17 sesiones individuales. Tu equipo ejecuta; vos sabés por qué.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#consulta">Consultar por WhatsApp</a>
+          <a class="btn btn-ghost" href="#metodo">Ver cómo funciona</a>
+        </div>
+
+        <div class="facts" role="list">
+          <div class="fact" role="listitem"><strong>13 semanas</strong><span>de trabajo sobre tu tienda</span></div>
+          <div class="fact" role="listitem"><strong>17 sesiones</strong><span>individuales programadas con Nicolás</span></div>
+          <div class="fact" role="listitem"><strong>3 sistemas</strong><span>Numbers, CRM y EcomBoost Studio</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRUEBA SOCIAL -->
+    <section id="casos" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Casos publicados</p>
+          <h2>Resultados publicados en EcomBoost IA</h2>
+          <p>Siete casos que Nicolás publicó en su trabajo con EcomBoost IA, con la cifra, la métrica y el período de la fuente.</p>
+        </div>
+
+        <div class="aviso">
+          <strong>Antes de leerlos:</strong> estos casos corresponden a trabajos anteriores publicados en EcomBoost IA.
+          No son resultados obtenidos dentro de Scaling Boost ni anticipan lo que va a pasar en tu tienda.
+        </div>
+
+        <div class="metricas">
+          <div class="metrica">
+            <h3><span class="dot dot-fact" aria-hidden="true"></span>Facturación</h3>
+            <p>Dinero vendido por la tienda en el período indicado.</p>
+          </div>
+          <div class="metrica">
+            <h3><span class="dot dot-ped" aria-hidden="true"></span>Pedidos</h3>
+            <p>Cantidad de órdenes. No dice cuánto dinero representan.</p>
+          </div>
+          <div class="metrica">
+            <h3><span class="dot dot-ads" aria-hidden="true"></span>Resultados publicitarios</h3>
+            <p>Valor de conversiones que informa la plataforma de anuncios, como Meta Ads. No equivale a facturación de la tienda.</p>
+          </div>
+        </div>
+
+        <!--
+          Completar cada caso con la cifra, la métrica y el período TAL COMO aparecen en
+          https://nicolasbarone.com/ecomboost-ia (sección «RESULTADOS DE ÉXITO").
+          Cambiar la clase del punto según la métrica: dot-fact (facturación), dot-ped (pedidos), dot-ads (resultados publicitarios).
+        -->
+        <div class="casos">
+          <article class="card caso">
+            <div class="caso-top"><h3>Emanuel</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
+            <div class="caso-dato">
+              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
+              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
+              <span><b>Período:</b> <span class="validar">Validar</span></span>
+            </div>
+            <figure>
+              <a href="https://nicolasbarone.com/emanuel-resultado.png" target="_blank" rel="noopener">
+                <img src="https://nicolasbarone.com/emanuel-resultado.png" alt="Captura publicada del resultado de Emanuel" width="800" height="600" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+            </figure>
+          </article>
+
+          <article class="card caso">
+            <div class="caso-top"><h3>Julio</h3><span class="caso-rubro">Indumentaria</span></div>
+            <div class="caso-dato">
+              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
+              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
+              <span><b>Período:</b> <span class="validar">Validar</span></span>
+            </div>
+            <figure>
+              <a href="https://nicolasbarone.com/julio-resultado.jpeg" target="_blank" rel="noopener">
+                <img src="https://nicolasbarone.com/julio-resultado.jpeg" alt="Captura publicada del resultado de Julio, tienda de indumentaria" width="800" height="600" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+            </figure>
+          </article>
+
+          <article class="card caso">
+            <div class="caso-top"><h3>Lucía</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
+            <div class="caso-dato">
+              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
+              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
+              <span><b>Período:</b> <span class="validar">Validar</span></span>
+            </div>
+            <figure>
+              <a href="https://nicolasbarone.com/lucia-resultado-meta.png" target="_blank" rel="noopener">
+                <img src="https://nicolasbarone.com/lucia-resultado-meta.png" alt="Captura publicada del resultado de Lucía" width="800" height="600" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+            </figure>
+          </article>
+
+          <article class="card caso">
+            <div class="caso-top"><h3>Marcos</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
+            <div class="caso-dato">
+              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
+              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
+              <span><b>Período:</b> <span class="validar">Validar</span></span>
+            </div>
+            <p class="sin-captura">Caso publicado sin captura en la fuente.</p>
+          </article>
+
+          <article class="card caso">
+            <div class="caso-top"><h3>Tienda de suplementos</h3><span class="caso-rubro">Suplementos</span></div>
+            <div class="caso-dato">
+              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
+              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
+              <span><b>Período:</b> <span class="validar">Validar</span></span>
+            </div>
+            <p class="sin-captura">Caso publicado sin captura en la fuente.</p>
+          </article>
+
+          <article class="card caso">
+            <div class="caso-top"><h3>Michael</h3><span class="caso-rubro"><span class="validar">Validar: rubro</span></span></div>
+            <div class="caso-dato">
+              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
+              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
+              <span><b>Período:</b> <span class="validar">Validar</span></span>
+            </div>
+            <figure>
+              <a href="https://nicolasbarone.com/original-result-4.jpg" target="_blank" rel="noopener">
+                <img src="https://nicolasbarone.com/original-result-4.jpg" alt="Captura publicada del resultado de Michael" width="800" height="600" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+            </figure>
+          </article>
+
+          <article class="card caso">
+            <div class="caso-top"><h3>Julio</h3><span class="caso-rubro">Tecnología</span></div>
+            <div class="caso-dato">
+              <span><b>Cifra:</b> <span class="validar">Validar</span></span>
+              <span><b>Métrica:</b> <span class="validar">Validar</span></span>
+              <span><b>Período:</b> <span class="validar">Validar</span></span>
+            </div>
+            <figure>
+              <a href="https://nicolasbarone.com/original-result-2.jpg" target="_blank" rel="noopener">
+                <img src="https://nicolasbarone.com/original-result-2.jpg" alt="Captura publicada del resultado de Julio, tienda de tecnología" width="800" height="600" loading="lazy" decoding="async">
+              </a>
+              <figcaption>Captura publicada · tocá para ampliar</figcaption>
+            </figure>
+          </article>
+        </div>
+
+        <p class="fuente">Fuente: <a href="https://nicolasbarone.com/ecomboost-ia" target="_blank" rel="noopener">nicolasbarone.com/ecomboost-ia</a>, sección «Resultados de éxito».</p>
+      </div>
+    </section>
+
+    <!-- MÉTODO -->
+    <section id="metodo">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Cómo funciona</p>
+          <h2>Nicolás instala y enseña. Tu equipo ejecuta.</h2>
+          <p>Scaling Boost no es una agencia que opera tu tienda. Es un trabajo de 13 semanas para que tu operación tenga sistemas, criterio y un plan de cambios que tu equipo pueda sostener.</p>
+        </div>
+
+        <ol class="pasos">
+          <li class="card">
+            <h3>Instalación de sistemas</h3>
+            <p>Nicolás instala Numbers, CRM y EcomBoost Studio en tu operación.</p>
+          </li>
+          <li class="card">
+            <h3>Qué cambiar</h3>
+            <p>En las sesiones te enseña qué cambios implementar y en qué orden.</p>
+          </li>
+          <li class="card">
+            <h3>Ejecución de tu equipo</h3>
+            <p>Vos y tu equipo llevan adelante campañas, páginas, contenido y operación.</p>
+          </li>
+          <li class="card">
+            <h3>Decisiones acompañadas</h3>
+            <p>Revisan juntos lo que pasó y definen el próximo paso en cada sesión.</p>
+          </li>
+        </ol>
+
+        <div class="cta-band">
+          <p>¿Querés saber si Scaling Boost encaja con tu tienda?</p>
+          <a class="btn btn-primary" href="#consulta">Hacer mi consulta</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUÉ INCLUYE -->
+    <section id="incluye" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Qué incluye</p>
+          <h2>Tres sistemas separados, 17 sesiones programadas</h2>
+          <p>Cada sistema se instala por separado y cumple una función distinta dentro de tu operación.</p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card sistema">
+            <span class="tag">Sistema 1</span>
+            <h3>Numbers</h3>
+            <p><span class="validar">Validar: qué hace Numbers</span></p>
+          </article>
+          <article class="card sistema">
+            <span class="tag">Sistema 2</span>
+            <h3>CRM</h3>
+            <p><span class="validar">Validar: qué hace el CRM</span></p>
+          </article>
+          <article class="card sistema">
+            <span class="tag">Sistema 3</span>
+            <h3>EcomBoost Studio</h3>
+            <p><span class="validar">Validar: qué hace EcomBoost Studio</span></p>
+          </article>
+        </div>
+
+        <ul class="incluye">
+          <li><span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9l5-6"/></svg></span><span><b>17 sesiones individuales programadas</b> con Nicolás a lo largo de las 13 semanas.</span></li>
+          <li><span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9l5-6"/></svg></span><span><b>Instalación de Numbers, CRM y EcomBoost Studio</b> en tu operación.</span></li>
+          <li><span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9l5-6"/></svg></span><span><b>Qué cambios implementar</b>, explicados para que tu equipo los ejecute.</span></li>
+          <li><span class="check" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5 5 9l5-6"/></svg></span><span><b>Acompañamiento en las decisiones</b> durante todo el programa.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ROLES -->
+    <section id="roles">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Quién hace qué</p>
+          <h2>Roles claros desde la primera sesión</h2>
+        </div>
+        <div class="grid-2">
+          <article class="card rol">
+            <h3><span class="dot dot-fact" aria-hidden="true"></span>Nicolás</h3>
+            <ul>
+              <li>Instala Numbers, CRM y EcomBoost Studio.</li>
+              <li>Enseña qué cambios implementar.</li>
+              <li>Acompaña las decisiones en las 17 sesiones.</li>
+            </ul>
+          </article>
+          <article class="card rol">
+            <h3><span class="dot dot-ads" aria-hidden="true"></span>Vos y tu equipo</h3>
+            <ul>
+              <li>Ejecutan las campañas.</li>
+              <li>Arman y ajustan las páginas.</li>
+              <li>Producen el contenido.</li>
+              <li>Llevan la operación diaria de la tienda.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- NICOLÁS -->
+    <section id="nicolas" class="alt">
+      <div class="wrap about">
+        <div class="avatar" role="img" aria-label="Espacio para la foto de Nicolás Barone">
+          <div>NB<br><span class="validar">Validar: foto</span></div>
+        </div>
+        <div>
+          <p class="eyebrow">Quién te acompaña</p>
+          <h2>Nicolás Barone</h2>
+          <p>Nicolás presenta Scaling Boost y es quien trabaja con vos en cada una de las 17 sesiones. Los casos de esta página son trabajos suyos publicados en EcomBoost IA.</p>
+          <p><span class="validar">Validar: bio y trayectoria de Nicolás</span></p>
+          <p><a href="https://nicolasbarone.com" target="_blank" rel="noopener">nicolasbarone.com</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVERSIÓN -->
+    <section id="inversion">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Inversión</p>
+          <h2>Precio y condiciones</h2>
+        </div>
+        <div class="precio">
+          <div class="card precio-main">
+            <dl>
+              <div><dt>Programa</dt><dd>Scaling Boost · 13 semanas · 17 sesiones individuales programadas</dd></div>
+              <div><dt>Precio</dt><dd><span class="validar">Validar: precio</span></dd></div>
+              <div><dt>Forma de pago</dt><dd><span class="validar">Validar: pagos</span></dd></div>
+            </dl>
+          </div>
+          <div class="card">
+            <dl>
+              <div><dt>Después de las 13 semanas</dt><dd><span class="validar">Validar: continuidad</span></dd></div>
+              <div><dt>Garantía</dt><dd><span class="validar">Validar: garantía</span></dd></div>
+            </dl>
+          </div>
+        </div>
+        <div class="cta-band">
+          <p>Contanos cómo está tu tienda y te respondemos por WhatsApp.</p>
+          <a class="btn btn-primary" href="#consulta">Hacer mi consulta</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREGUNTAS FRECUENTES -->
+    <section id="preguntas" class="alt">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Preguntas frecuentes</p>
+          <h2>Lo que conviene saber antes de consultar</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>¿Cuánto dura y cuántas sesiones tiene?</summary>
+            <p>13 semanas, con 17 sesiones individuales programadas con Nicolás.</p>
+          </details>
+          <details>
+            <summary>¿Nicolás maneja mis campañas o mi tienda?</summary>
+            <p>No. Nicolás instala los sistemas, te enseña qué cambios implementar y te acompaña en las decisiones. Las campañas, las páginas, el contenido y la operación los ejecutan vos y tu equipo.</p>
+          </details>
+          <details>
+            <summary>¿Qué sistemas se instalan?</summary>
+            <p>Tres sistemas separados: Numbers, CRM y EcomBoost Studio.</p>
+          </details>
+          <details>
+            <summary>¿Me aseguran una facturación?</summary>
+            <p>No. Cualquier meta de facturación que se defina es un objetivo de trabajo, no un resultado asegurado. El resultado depende de tu tienda, tu mercado y la ejecución de tu equipo.</p>
+          </details>
+          <details>
+            <summary>¿Los casos de la página son de Scaling Boost?</summary>
+            <p>No. Son trabajos anteriores de Nicolás publicados en EcomBoost IA. Los mostramos con la cifra, la métrica y el período de la fuente.</p>
+          </details>
+          <details>
+            <summary>¿Cuánto cuesta y cómo se paga?</summary>
+            <p><span class="validar">Validar: precio y forma de pago</span></p>
+          </details>
+          <details>
+            <summary>¿Tiene garantía?</summary>
+            <p><span class="validar">Validar: garantía</span></p>
+          </details>
+          <details>
+            <summary>¿Qué pasa cuando envío el formulario?</summary>
+            <p>Se abre WhatsApp con tu consulta armada. La consulta llega recién cuando tocás Enviar en WhatsApp. Esta página no guarda tus datos.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONSULTA -->
+    <section id="consulta">
+      <div class="wrap consulta">
+        <div>
+          <p class="eyebrow">Consulta</p>
+          <h2>Contanos sobre tu tienda</h2>
+          <p class="lead" style="margin-top:16px">Completá cuatro datos y armamos tu consulta para WhatsApp.</p>
+          <ol>
+            <li>Completás el formulario.</li>
+            <li>Se abre WhatsApp con el mensaje listo para Nicolás.</li>
+            <li>Lo revisás y tocás Enviar. Recién ahí nos llega.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <form id="form-consulta" novalidate>
+            <div class="campo">
+              <label for="nombre">Nombre</label>
+              <input id="nombre" name="nombre" type="text" autocomplete="name" maxlength="80" required aria-describedby="nombre-error" placeholder="Tu nombre">
+              <span class="error" id="nombre-error" role="alert"></span>
+            </div>
+            <div class="campo">
+              <label for="whatsapp">WhatsApp</label>
+              <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" required aria-describedby="whatsapp-hint whatsapp-error" placeholder="+54 9 11 1234 5678">
+              <span class="hint" id="whatsapp-hint">Con código de país y de área.</span>
+              <span class="error" id="whatsapp-error" role="alert"></span>
+            </div>
+            <div class="campo">
+              <label for="tienda">URL de tu tienda</label>
+              <input id="tienda" name="tienda" type="text" inputmode="url" autocomplete="url" maxlength="200" required aria-describedby="tienda-error" placeholder="mitienda.com">
+              <span class="error" id="tienda-error" role="alert"></span>
+            </div>
+            <div class="campo">
+              <label for="desafio">Principal desafío</label>
+              <textarea id="desafio" name="desafio" maxlength="600" required aria-describedby="desafio-hint desafio-error" placeholder="Ej.: vendemos, pero no sabemos qué campañas dejan margen."></textarea>
+              <span class="hint" id="desafio-hint">Entre 10 y 600 caracteres.</span>
+              <span class="error" id="desafio-error" role="alert"></span>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Abrir WhatsApp con mi consulta</button>
+            <p class="privacidad">Esta página no guarda tus datos. Al tocar el botón se abre WhatsApp con tu mensaje armado para el +54 9 11 5998-4895; se envía solo cuando lo confirmás ahí.</p>
+
+            <div class="estado" id="estado" role="status" aria-live="polite" tabindex="-1"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 Nicolás Barone · Scaling Boost</span>
+      <span>
+        <a href="https://nicolasbarone.com" target="_blank" rel="noopener">nicolasbarone.com</a> ·
+        <a href="https://wa.me/5491159984895" target="_blank" rel="noopener">WhatsApp</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var WA_NUMBER = '5491159984895';
+
+      // Si una captura no carga, se reemplaza por un aviso en lugar de dejar un recuadro vacío.
+      document.querySelectorAll('.caso img').forEach(function (img) {
+        function fallar() {
+          var fig = img.closest('figure');
+          if (!fig) return;
+          var link = img.closest('a');
+          var aviso = document.createElement('div');
+          aviso.className = 'img-error';
+          aviso.innerHTML = 'No se pudo cargar la captura. <a href="' + link.href + '" target="_blank" rel="noopener">Abrir imagen</a>';
+          link.replaceWith(aviso);
+        }
+        img.addEventListener('error', fallar);
+        if (img.complete && img.naturalWidth === 0 && img.currentSrc) fallar();
+      });
+
+      var form = document.getElementById('form-consulta');
+      var estado = document.getElementById('estado');
+
+      function normalizarUrl(valor) {
+        var v = valor.trim();
+        if (!v) return null;
+        if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+        try {
+          var u = new URL(v);
+          if (!/^[^.\s]+(\.[^.\s]+)+$/.test(u.hostname)) return null;
+          return u.href.replace(/\/$/, '');
+        } catch (e) {
+          return null;
+        }
+      }
+
+      var reglas = {
+        nombre: function (v) {
+          v = v.trim();
+          if (!v) return 'Escribí tu nombre.';
+          if (v.length < 2) return 'El nombre tiene que tener al menos 2 letras.';
+          return '';
+        },
+        whatsapp: function (v) {
+          var t = v.trim();
+          if (!t) return 'Escribí tu número de WhatsApp.';
+          if (/[^\d\s+()\-.]/.test(t)) return 'Usá solo números, espacios, guiones o el signo +.';
+          var digitos = t.replace(/\D/g, '');
+          if (digitos.length < 10 || digitos.length > 15) return 'El número tiene que tener entre 10 y 15 dígitos, con código de país y de área.';
+          return '';
+        },
+        tienda: function (v) {
+          if (!v.trim()) return 'Escribí la URL de tu tienda.';
+          if (!normalizarUrl(v)) return 'Revisá la URL. Ejemplo: mitienda.com';
+          return '';
+        },
+        desafio: function (v) {
+          v = v.trim();
+          if (!v) return 'Contanos tu principal desafío.';
+          if (v.length < 10) return 'Sumá un poco más de detalle (mínimo 10 caracteres).';
+          return '';
+        }
+      };
+
+      function validarCampo(nombre) {
+        var campo = form.elements[nombre];
+        var msg = reglas[nombre](campo.value);
+        document.getElementById(nombre + '-error').textContent = msg;
+        campo.setAttribute('aria-invalid', msg ? 'true' : 'false');
+        return !msg;
+      }
+
+      Object.keys(reglas).forEach(function (nombre) {
+        var campo = form.elements[nombre];
+        campo.addEventListener('blur', function () { if (campo.value) validarCampo(nombre); });
+        campo.addEventListener('input', function () {
+          if (campo.getAttribute('aria-invalid') === 'true') validarCampo(nombre);
+        });
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var primeroInvalido = null;
+        Object.keys(reglas).forEach(function (nombre) {
+          if (!validarCampo(nombre) && !primeroInvalido) primeroInvalido = form.elements[nombre];
+        });
+        if (primeroInvalido) {
+          estado.classList.remove('visible');
+          estado.innerHTML = '';
+          primeroInvalido.focus();
+          return;
+        }
+
+        var d = {
+          nombre: form.elements.nombre.value.trim(),
+          whatsapp: form.elements.whatsapp.value.trim(),
+          tienda: normalizarUrl(form.elements.tienda.value),
+          desafio: form.elements.desafio.value.trim()
+        };
+        var mensaje =
+          'Hola Nicolás, quiero consultar por Scaling Boost.\n\n' +
+          'Nombre: ' + d.nombre + '\n' +
+          'WhatsApp: ' + d.whatsapp + '\n' +
+          'Tienda: ' + d.tienda + '\n' +
+          'Principal desafío: ' + d.desafio;
+        var url = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(mensaje);
+
+        window.open(url, '_blank', 'noopener');
+
+        estado.innerHTML =
+          '<p><strong>Tu consulta está lista en WhatsApp.</strong> Se abrió en otra pestaña o en la app. Revisá el mensaje y tocá Enviar: recién ahí nos llega.</p>' +
+          '<p>Esta página no guardó tus datos. Si WhatsApp no se abrió, <a href="' + url + '" target="_blank" rel="noopener">abrilo desde acá</a>.</p>';
+        estado.classList.add('visible');
+        estado.focus();
+      });
+    })();
+  </script>
+</body>
+</html>
